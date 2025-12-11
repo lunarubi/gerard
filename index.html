@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CookieCraft — Mobile App Design (Demo)</title>
+    <style>
+        :root{
+            --bg1:#ffecd2;
+            --bg2:#fcb69f;
+            --card:#fff7ed;
+            --accent:#b25a2f;
+            --muted:#7a5a4d;
+            --glass: rgba(255,255,255,0.7);
+            --shadow: 0 10px 30px rgba(0,0,0,0.12);
+            --glass-2: rgba(255,255,255,0.55);
+            --glass-border: rgba(255,255,255,0.4);
+        }
+        *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+        html,body{height:100%; margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing:antialiased}
+        body{
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.25), transparent),
+                                    linear-gradient(135deg,var(--bg1),var(--bg2));
+            color:var(--muted);
+            display:flex;
+            align-items:flex-start;
+            justify-content:center;
+            padding:20px;
+        }
+
+        .phone {
+            width:380px;
+            max-width:100%;
+            height:820px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));
+            border-radius:28px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+            overflow:hidden;
+            position:relative;
+            border:1px solid rgba(255,255,255,0.6);
+        }
+
+        header.appbar{
+            height:78px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:14px 18px;
+            gap:12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent);
+            backdrop-filter: blur(6px);
+            border-bottom:1px solid var(--glass-border);
+        }
+        .brand{
+            display:flex;align-items:center;gap:12px;
+        }
+        .logo{
+            width:50px;height:50px;border-radius:12px;
+            background:linear-gradient(135deg,#ffd89b,#ff7a5c);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 8px 18px rgba(0,0,0,0.12), inset 0 -6px 12px rgba(0,0,0,0.06);
+            transform:translateZ(0);
+        }
+        .logo svg{width:34px;height:34px;filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));}
+        .title{font-weight:700;color:var(--accent); font-size:16px; line-height:1}
+        .subtitle{font-size:11px;color:var(--muted); margin-top:2px}
+
+        .profile-actions{display:flex;align-items:center;gap:8px;}
+        .btn {
+            background:transparent;border:0;padding:8px 12px;border-radius:10px;font-weight:600;color:var(--accent);cursor:pointer;
+            transition:all .18s ease; display:inline-flex; align-items:center; gap:8px;
+        }
+        .btn:active{transform:translateY(1px)}
+        .btn.primary{
+            background: linear-gradient(90deg,#ffd89b,#ff7a5c);
+            color:#4b250b; box-shadow: var(--shadow); border:1px solid rgba(0,0,0,0.06)
+        }
+
+        main.content{
+            padding:18px;
+            overflow:auto;
+            height: calc(100% - 78px);
+        }
+
+        .hero{
+            display:flex;gap:12px;align-items:center;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.15));
+            padding:12px;border-radius:14px;margin-bottom:14px;
+            border:1px solid var(--glass-border);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .hero .text{flex:1}
+        .hero h1{margin:0;font-size:18px;color:var(--accent)}
+        .hero p{margin:4px 0 0;font-size:13px;color:#6c4f43}
+        .hero .cookie-hero{width:88px;height:88px; border-radius:14px; background:linear-gradient(#fff9f0,#fff2e6); display:flex;align-items:center;justify-content:center; box-shadow:0 10px 24px rgba(0,0,0,0.08)}
+        .cookie-hero svg{width:64px;height:64px; animation: float 5s ease-in-out infinite; transform-origin:center;}
+
+        .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+        .card{
+            background:linear-gradient(180deg,var(--card), #fff3e7);
+            padding:10px;border-radius:14px; border:1px solid rgba(255,255,255,0.6);
+            box-shadow:var(--shadow); display:flex;flex-direction:column;gap:8px; cursor:pointer; position:relative;
+            transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .18s;
+            overflow:visible;
+        }
+        .card:hover{ transform: translateY(-8px) scale(1.02); box-shadow:0 18px 40px rgba(0,0,0,0.12)}
+        .cookie-thumb{width:86px;height:86px;border-radius:12px;display:flex;align-items:center;justify-content:center; background:linear-gradient(180deg,#fff,#fff0e5); margin:auto}
+        .card .name{font-weight:700;color:var(--accent); text-align:center}
+        .card .desc{font-size:12px;color:#8a6b5e;text-align:center}
+        .card .price{font-weight:800;color:#8a3f18; text-align:center; margin-top:6px}
+
+        .ribbon{
+            position:absolute; left:10px; top:10px; background:linear-gradient(90deg,#ffcc6a,#ff7a5c); color:#4b250b;
+            padding:6px 8px; border-radius:10px; font-weight:700; font-size:12px; display:inline-flex; gap:6px; align-items:center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+        .tag{
+            display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.85);
+            border:1px solid rgba(0,0,0,0.04); font-size:11px; color:#5b3f35;
+        }
+        .tag svg{width:14px;height:14px;display:block}
+
+        @keyframes float {
+            0%{ transform: translateY(0) }
+            50%{ transform: translateY(-10px) rotate(-6deg) }
+            100%{ transform: translateY(0) }
+        }
+        .card .cookie-thumb svg{ animation: float 4.8s ease-in-out infinite; transform-origin:center}
+        .card:nth-child(2) .cookie-thumb svg{ animation-duration:5.6s }
+        .card:nth-child(3) .cookie-thumb svg{ animation-duration:4s }
+        .card:nth-child(4) .cookie-thumb svg{ animation-duration:5.1s }
+
+        .overlay, .login-overlay{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:60; }
+        .overlay.hidden{ display:none }
+        .modal{
+            width:88%; max-width:360px; background:linear-gradient(180deg, #fff, #fff7f0); border-radius:16px; padding:16px;
+            box-shadow:0 30px 80px rgba(0,0,0,0.24); border:1px solid rgba(0,0,0,0.04);
+            animation: pop .18s ease;
+        }
+        @keyframes pop{ from{transform:translateY(8px) scale(.98); opacity:0} to{transform:none;opacity:1}}
+
+        .modal .meta{display:flex;gap:12px;align-items:center}
+        .modal .meta svg{width:84px;height:84px}
+        .modal h2{margin:6px 0 0;font-size:18px;color:var(--accent)}
+        .modal p{margin:8px 0 0;color:#6c4f43;font-size:13px}
+
+        .modal .row{display:flex; gap:8px; margin-top:12px}
+        .modal .row .btn{flex:1}
+
+        .login-overlay{ background: linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.18)); padding:24px; }
+        .login-box{
+            width:100%; max-width:380px; background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.94));
+            border-radius:18px; padding:18px; box-shadow:0 30px 80px rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.7)
+        }
+        .login-box h3{margin:0 0 8px; color:var(--accent)}
+        .form-row{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+        input[type="text"], input[type="password"], input[type="number"]{
+            padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06); background:var(--glass-2); outline:none;
+            font-size:14px; color:#523a31;
+        }
+        .small{font-size:12px;color:#7a5a4d}
+        .brand-sm{display:flex;gap:8px;align-items:center;margin-top:10px}
+        .footer-note{font-size:12px;color:#6a4f43;margin-top:10px;text-align:center}
+
+        .guide{margin-top:12px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4)); padding:12px;border-radius:14px;border:1px solid var(--glass-border)}
+        .step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+        .step .idx{width:34px;height:34px;border-radius:8px;background:linear-gradient(90deg,#ffd89b,#ff7a5c);display:flex;align-items:center;justify-content:center;color:#4b250b;font-weight:700}
+        .step p{margin:0;font-size:13px;color:#5b3f35}
+
+        @media (max-width:420px){
+            .phone{height:100vh;margin:0;border-radius:0}
+            header.appbar{height:72px;padding:12px}
+        }
+
+        .muted{font-size:12px;color:#6c4f43}
+        .fav{position:absolute; right:10px; top:10px; background:linear-gradient(90deg,#fff6f1,#fff); padding:8px;border-radius:10px; border:1px solid rgba(255,255,255,0.6); cursor:pointer;}
+
+        .order-confirm{
+            position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:80;
+            background: linear-gradient(0deg, rgba(0,0,0,0.28), rgba(0,0,0,0.18));
+        }
+        .order-card{
+            width:86%; max-width:360px; background:linear-gradient(180deg,#fff,#fffdf6); border-radius:14px; padding:16px;
+            box-shadow:0 30px 80px rgba(0,0,0,0.28); border:1px solid rgba(0,0,0,0.04); text-align:center;
+        }
+        .order-card h3{margin:0;color:#2e7d32}
+        .order-card p{margin:8px 0 0;color:#5b3f35}
+    </style>
+</head>
+<body>
+    <div class="phone" id="app">
+        <header class="appbar">
+            <div class="brand">
+                <div class="logo" aria-hidden>
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="30" fill="#f7c07c"/>
+                        <path d="M18 16c6 1 9 0 13 0s8 3 12 7 8 8 8 15c0 11-9 20-20 20S11 55 11 44C11 30 13 19 18 16z" fill="#e39e52" opacity="0.35"/>
+                        <circle cx="24" cy="26" r="3" fill="#6b3f2a"/>
+                        <circle cx="33" cy="20" r="2.6" fill="#6b3f2a"/>
+                        <circle cx="40" cy="34" r="3.2" fill="#6b3f2a"/>
+                        <circle cx="30" cy="36" r="2.4" fill="#6b3f2a"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="title">CookieCraft</div>
+                    <div class="subtitle">Delicious cookies — mobile demo</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <div id="welcomeText" class="muted">Welcome</div>
+                <button id="logoutBtn" class="btn" style="display:none">Log out</button>
+            </div>
+        </header>
+
+        <main class="content" id="mainContent">
+            <section class="hero" aria-label="hero">
+                <div class="text">
+                    <h1>Home of warm cookies</h1>
+                    <p>Tap a cookie to view details. Add favorites and try recipes in the user guide.</p>
+                </div>
+                <div class="cookie-hero" aria-hidden>
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="30" fill="#f8cc85"/>
+                        <path d="M14 24c4-6 10-8 16-8 8 0 14 5 18 10 4 6 5 13 1 20s-10 11-18 11-20-6-24-12c-3-5-5-11-2-21z" fill="#f3ae50" opacity="0.2"/>
+                        <circle cx="37" cy="28" r="3.8" fill="#6b3f2a"/>
+                        <circle cx="47" cy="33" r="2.6" fill="#6b3f2a"/>
+                        <circle cx="27" cy="36" r="3.2" fill="#6b3f2a"/>
+                        <circle cx="21" cy="26" r="2.4" fill="#6b3f2a"/>
+                    </svg>
+                </div>
+            </section>
+
+            <section>
+                <div class="grid" id="productGrid" aria-live="polite">
+                </div>
+            </section>
+
+            <section class="guide" aria-label="User guide">
+                <h3 style="margin:0;color:var(--accent)">User Guide</h3>
+                <p class="small">How to present and demo this mobile app design:</p>
+                <div class="step">
+                    <div class="idx">1</div><p>Start by logging in. Explain authentication flow and mobile-first UI choices.</p>
+                </div>
+                <div class="step">
+                    <div class="idx">2</div><p>Show the home screen, floating cookie cards, and how animations improve delight.</p>
+                </div>
+                <div class="step">
+                    <div class="idx">3</div><p>Tap a cookie to open detail modal. Demonstrate 'Add to favorites', 'Buy Now' and order confirmation.</p>
+                </div>
+                <div class="step">
+                    <div class="idx">4</div><p>Explain responsive choices, accessibility labels, and how to extend features.</p>
+                </div>
+                <div class="footer-note">All interactions work fully with localStorage persistence.</div>
+            </section>
+        </main>
+
+        <div class="overlay hidden" id="productModal" aria-hidden="true">
+            <div class="modal" role="dialog" aria-modal="true">
+                <div style="display:flex;justify-content:flex-end;">
+                    <button class="btn" id="closeModal">Close</button>
+                </div>
+                <div class="meta" id="modalMeta"></div>
+
+                <div style="margin-top:10px; display:flex; gap:8px; align-items:center; justify-content:space-between">
+                    <label class="small" style="margin:0">Qty</label>
+                    <input id="qtyInput" type="number" min="1" value="1" style="width:86px" />
+                </div>
+
+                <div class="row" style="margin-top:12px">
+                    <button class="btn primary" id="favBtn">Add to favorites</button>
+                    <button class="btn" id="buyNowBtn">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-overlay" id="loginOverlay" style="display:flex">
+            <div class="login-box" role="dialog" aria-modal="true">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <h3>Sign in to CookieCraft</h3>
+                    <div class="logo" style="width:44px;height:44px;border-radius:10px">
+                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="32" cy="32" r="30" fill="#f7c07c"/><circle cx="24" cy="26" r="3" fill="#6b3f2a"/><circle cx="33" cy="20" r="2.6" fill="#6b3f2a"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="small">Username</label>
+                    <input type="text" id="username" placeholder="Your name" />
+                    <label class="small">Password</label>
+                    <input type="password" id="password" placeholder="Any password" />
+                    <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+                        <div class="brand-sm"><input type="checkbox" id="remember" /> <label for="remember" class="small">Remember me</label></div>
+                        <button id="demoCreds" class="btn">Demo creds</button>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                        <button id="loginBtn" class="btn primary">Sign in</button>
+                        <button id="guestBtn" class="btn">Continue as guest</button>
+                    </div>
+                </div>
+
+                <div class="footer-note">Demo: Use any username/password or click "Demo creds".</div>
+            </div>
+        </div>
+
+        <div class="order-confirm" id="orderConfirm" style="display:none" aria-hidden="true">
+            <div class="order-card" id="orderCard">
+                <h3>✓ Order Confirmed</h3>
+                <p id="orderDetails">Order #123456 — Classic Chocolate Chip ×1</p>
+                <div style="margin-top:12px; display:flex; gap:8px; justify-content:center">
+                    <button class="btn primary" id="closeOrder">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const products = [
+                { id:1, name:"Classic Chocolate Chip", desc:"Warm, buttery cookie with chocolate chips.", price:"$2.50", color:"#f7c07c", featured:true, tags:['bestseller','contains-nuts'] },
+                { id:2, name:"Double Fudge Brownie", desc:"Rich fudge cookie for chocolate lovers.", price:"$3.00", color:"#e7a27a", featured:true, tags:['bestseller'] },
+                ];
+
+            const productGrid = document.getElementById('productGrid');
+            const productModal = document.getElementById('productModal');
+            const modalMeta = document.getElementById('modalMeta');
+            const closeModal = document.getElementById('closeModal');
+            const favBtn = document.getElementById('favBtn');
+            const buyNowBtn = document.getElementById('buyNowBtn');
+            const loginOverlay = document.getElementById('loginOverlay');
+            const loginBtn = document.getElementById('loginBtn');
+            const guestBtn = document.getElementById('guestBtn');
+            const demoCreds = document.getElementById('demoCreds');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const remember = document.getElementById('remember');
+            const welcomeText = document.getElementById('welcomeText');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const orderConfirm = document.getElementById('orderConfirm');
+            const orderDetails = document.getElementById('orderDetails');
+            const closeOrder = document.getElementById('closeOrder');
+
+            let currentUser = null;
+            let currentProduct = null;
+
+            function tagSVG(key){
+                const svgs = {
+                    'vegan': '<svg viewBox="0 0 24 24" fill="#4caf50" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C9 6 4 8 4 12a8 8 0 0016 0c0-4-5-6-8-10z"/></svg>',
+                    'gluten-free': '<svg viewBox="0 0 24 24" stroke="#d32f2f" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M3 3l18 18" stroke-linecap="round"/><circle cx="12" cy="12" r="6" fill="none"/></svg>',
+                    'new': '<svg viewBox="0 0 24 24" fill="#ffb300" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2.6 6.7L21 9l-5 3.6L17 21l-5-3.2L7 21l1-8.4L3 9l6.4-.3L12 2z"/></svg>',
+                    'bestseller': '<svg viewBox="0 0 24 24" fill="#ff7043" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3 7h7l-5.5 4.1L20 22l-8-5-8 5 1.5-8.9L0 9h7l3-7z"/></svg>',
+                    'contains-nuts': '<svg viewBox="0 0 24 24" fill="#a1887f" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C9 2 4 4 4 10s5 8 8 12c3-4 8-6 8-12s-5-8-8-8z"/></svg>',
+                    'seasonal': '<svg viewBox="0 0 24 24" stroke="#8e44ad" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M12 18v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M2 12h4M18 12h4M4.2 19.8l2.8-2.8M17 7l2.8-2.8" stroke-linecap="round"/></svg>'
+                };
+                return svgs[key] || '<svg viewBox="0 0 24 24" fill="#cfd8dc" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8"/></svg>';
+            }
+
+            function cookieSVG(color="#f7c07c"){
+                return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="30" fill="${color}"/>
+                    <circle cx="24" cy="26" r="3" fill="#6b3f2a"/>
+                    <circle cx="33" cy="20" r="2.6" fill="#6b3f2a"/>
+                    <circle cx="40" cy="34" r="3.2" fill="#6b3f2a"/>
+                    <circle cx="30" cy="36" r="2.4" fill="#6b3f2a"/>
+                </svg>`;
+            }
+
+            function renderProducts(){
+                productGrid.innerHTML = '';
+                products.forEach(p=>{
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.tabIndex = 0;
+                    card.setAttribute('role','button');
+                    card.dataset.id = p.id;
+
+                    const tagsHtml = (p.tags || []).map(t => `<span class="tag" title="${t}">${tagSVG(t)}</span>`).join('');
+
+                    card.innerHTML = `
+                        ${p.featured ? `<div class="ribbon" aria-hidden>⭐ Featured</div>` : ''}
+                        <div class="fav" title="favorite" aria-label="favorite">⭐</div>
+                        <div class="cookie-thumb" aria-hidden>${cookieSVG(p.color)}</div>
+                        <div class="name">${p.name}</div>
+                        <div class="desc">${p.desc}</div>
+                        <div class="tags">${tagsHtml}</div>
+                        <div class="price">${p.price}</div>
+                    `;
+                    card.addEventListener('click', ()=>openProduct(p.id));
+                    card.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openProduct(p.id); });
+                    productGrid.appendChild(card);
+                });
+            }
+
+            function openProduct(id){
+                const p = products.find(x=>x.id===Number(id));
+                if(!p) return;
+                currentProduct = p;
+                const tagsHtml = (p.tags || []).map(t => `<span class="tag">${tagSVG(t)}<span style="margin-left:4px">${t.replace('-',' ')}</span></span>`).join('');
+                modalMeta.innerHTML = `
+                    <div style="width:84px;height:84px;border-radius:12px;background:linear-gradient(180deg,#fff,#fff0e5);display:flex;align-items:center;justify-content:center" aria-hidden>
+                        ${cookieSVG(p.color)}
+                    </div>
+                    <div style="flex:1">
+                        <h2>${p.name}</h2>
+                        <p>${p.desc}</p>
+                        <div style="margin-top:6px;font-weight:800;color:#8a3f18">${p.price}</div>
+                        <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">${tagsHtml}</div>
+                    </div>
+                `;
+                document.getElementById('qtyInput').value = 1;
+                productModal.classList.remove('hidden');
+                productModal.setAttribute('aria-hidden','false');
+            }
+
+            closeModal.addEventListener('click', ()=>{ 
+                productModal.classList.add('hidden'); 
+                productModal.setAttribute('aria-hidden','true'); 
+            });
+
+            favBtn.addEventListener('click', ()=> {
+                if(!currentProduct) return;
+                addFavorite(currentProduct.id);
+                favBtn.textContent = 'Favorited ✓';
+                setTimeout(()=> favBtn.textContent = 'Add to favorites', 1200);
+            });
+
+            buyNowBtn.addEventListener('click', ()=>{
+                if(!currentProduct) return;
+                const qtyInput = document.getElementById('qtyInput');
+                const qty = Math.max(1, parseInt(qtyInput.value) || 1);
+                const priceNum = parseFloat((currentProduct.price || '$0').replace('$','')) || 0;
+                const total = (priceNum * qty).toFixed(2);
+
+                const orderNo = generateOrderNo();
+                const order = {
+                    orderNo,
+                    productId: currentProduct.id,
+                    name: currentProduct.name,
+                    qty,
+                    total: `$${total}`,
+                    time: Date.now()
+                };
+                saveOrder(order);
+
+                orderDetails.textContent = `#${orderNo} — ${order.name} ×${order.qty} • ${order.total}`;
+                orderConfirm.style.display = 'flex';
+                orderConfirm.setAttribute('aria-hidden','false');
+
+                productModal.classList.add('hidden');
+                productModal.setAttribute('aria-hidden','true');
+            });
+
+            closeOrder.addEventListener('click', ()=> {
+                orderConfirm.style.display = 'none';
+                orderConfirm.setAttribute('aria-hidden','true');
+            });
+
+            function generateOrderNo(){
+                return String(Date.now()).slice(-8);
+            }
+
+            function saveOrder(order){
+                const key = 'cookieAppOrders';
+                const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                existing.unshift(order);
+                localStorage.setItem(key, JSON.stringify(existing));
+            }
+
+            function addFavorite(id){
+                const key = 'cookieAppFavorites';
+                const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                if(!existing.includes(id)) existing.push(id);
+                localStorage.setItem(key, JSON.stringify(existing));
+            }
+
+            function updateAuthUI(){
+                const stored = JSON.parse(localStorage.getItem('cookieAppUser') || 'null');
+                if(stored){
+                    currentUser = stored;
+                    loginOverlay.style.display = 'none';
+                    welcomeText.textContent = 'Hi, '+ (currentUser.name || 'Guest');
+                    logoutBtn.style.display = 'inline-flex';
+                } else {
+                    currentUser = null;
+                    loginOverlay.style.display = 'flex';
+                    welcomeText.textContent = 'Welcome';
+                    logoutBtn.style.display = 'none';
+                }
+            }
+
+            loginBtn.addEventListener('click', ()=>{ 
+                const name = usernameInput.value.trim(); 
+                const pw = passwordInput.value; 
+                if(!name || !pw){ 
+                    alert('Enter username and password'); 
+                    return; 
+                } 
+                const payload = { name, time: Date.now() }; 
+                localStorage.setItem('cookieAppUser', JSON.stringify(payload)); 
+                updateAuthUI(); 
+            });
+
+            demoCreds.addEventListener('click', ()=>{ 
+                usernameInput.value = 'Presenter'; 
+                passwordInput.value = 'cookies'; 
+            });
+
+            guestBtn.addEventListener('click', ()=>{ 
+                localStorage.setItem('cookieAppUser', JSON.stringify({name:'Guest'})); 
+                updateAuthUI(); 
+            });
+
+            logoutBtn.addEventListener('click', ()=>{ 
+                localStorage.removeItem('cookieAppUser'); 
+                updateAuthUI(); 
+            });
+
+            renderProducts();
+            updateAuthUI();
+
+            document.addEventListener('keydown', (e)=>{ 
+                if(e.key === 'Escape'){ 
+                    if(!productModal.classList.contains('hidden')) { 
+                        productModal.classList.add('hidden'); 
+                        productModal.setAttribute('aria-hidden','true'); 
+                    } 
+                    if(orderConfirm.style.display === 'flex'){ 
+                        orderConfirm.style.display = 'none'; 
+                        orderConfirm.setAttribute('aria-hidden','true'); 
+                    } 
+                } 
+            });
+        })();
+    </script>
+</body>
+</html>
